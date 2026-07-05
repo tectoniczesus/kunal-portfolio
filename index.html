@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Nabla&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -140,40 +140,404 @@ body.cur-link #cur-ring{width:52px;height:52px;border-color:var(--lime-glow);}
 .rv-s{opacity:0;transform:scale(.94);}
 
 /* ============================================================
-   HERO
+   HERO — COMPLETE REDESIGN
+   Cinematic kinetic word-cycle, centered layout, pure black bg,
+   animated grid, gold depth typography. Cross-browser safe.
 ============================================================ */
-#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);position:relative;overflow:hidden;}
-.hero-ambient{
-  position:absolute;inset:-20%;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 55% 40% at 20% 50%,rgba(232,197,71,.07),transparent 60%),
-    radial-gradient(ellipse 45% 40% at 80% 15%,rgba(232,197,71,.05),transparent 60%);
-  animation:ambFloat 10s ease-in-out infinite alternate;
+
+/* ---- Section shell ---- */
+#hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:0 var(--pad);
+  position:relative;
+  overflow:hidden;
+  background:#000;           /* pure black — intentional */
 }
-@keyframes ambFloat{to{transform:translate(-20px,16px) scale(1.04);}}
-.hero-content{max-width:1100px;position:relative;z-index:1;}
-.hero-pre{font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--chalk-dim);margin-bottom:24px;font-weight:500;opacity:0;padding-bottom:120px;}
-.hero-headline{
-  font-family:"Nabla",system-ui;font-weight:800;
-  font-size:clamp(3.2rem,10.5vw,9.2rem);line-height:.91;
-  letter-spacing:-.03em;text-transform:uppercase;margin-bottom:28px;
-  animation:headlineFloat 6s ease-in-out infinite;
-  will-change:transform;
+
+/* ---- Animated dot grid background ---- */
+#hero-grid{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  /* dot grid via SVG data-URI — sharp, zero-cost, cross-browser */
+  background-image:radial-gradient(circle,rgba(240,237,247,.18) 1px,transparent 1px);
+  background-size:38px 38px;
+  /* very slow drift */
+  animation:gridDrift 22s linear infinite;
+  will-change:background-position;
 }
-@keyframes headlineFloat{
-  0%,100%{transform:translateY(0px);   filter:drop-shadow(0 6px 24px rgba(232,197,71,.15));}
-  50%    {transform:translateY(-8px);  filter:drop-shadow(0 14px 32px rgba(232,197,71,.22));}
+@keyframes gridDrift{
+  0%  {background-position:0 0;}
+  100%{background-position:38px 38px;}
 }
-@media(prefers-reduced-motion:reduce){.hero-headline{animation:none;}}
-.hero-cycle-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(2rem,7vw,5.5rem);line-height:1;letter-spacing:-.01em;color:var(--chalk-dim);margin-bottom:36px;opacity:0;display:block;min-height:1.2em;}
-.hero-sub{max-width:450px;font-size:clamp(1rem,1.6vw,1.1rem);line-height:1.7;color:var(--chalk-dim);font-weight:300;opacity:0;}
-.hero-meta{position:absolute;right:var(--pad);bottom:60px;text-align:right;opacity:0;z-index:1;}
-.hero-meta p{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--chalk-dim);line-height:1.9;}
-.hero-scroll{position:absolute;left:var(--pad);bottom:20px;display:flex;align-items:flex-end;gap:12px;opacity:0;z-index:1;}
-.scroll-vert{writing-mode:vertical-rl;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--chalk-dim);font-weight:500;}
-.scroll-ticker{width:1px;height:52px;background:var(--seam-strong);overflow:hidden;position:relative;}
-.scroll-ticker::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--lime);animation:tickDrip 2.4s var(--film) infinite;}
-@keyframes tickDrip{0%{top:-100%}65%{top:100%}100%{top:100%}}
+
+/* ---- Radial glow behind the text ---- */
+#hero-glow{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:min(900px,130vw);
+  height:min(600px,90vw);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,
+    rgba(232,197,71,.10) 0%,
+    rgba(232,197,71,.03) 40%,
+    transparent 70%
+  );
+  pointer-events:none;
+  z-index:0;
+  animation:glowPulse 6s ease-in-out infinite alternate;
+}
+@keyframes glowPulse{
+  0%  {opacity:.7;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:1; transform:translate(-50%,-50%) scale(1.08);}
+}
+
+/* ---- Noise texture overlay for depth ---- */
+#hero::after{
+  content:'';
+  position:absolute;inset:0;
+  pointer-events:none;z-index:1;
+  opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Hero content — centered column ---- */
+.hero-content{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:1200px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:0;
+}
+
+/* ---- Eyebrow label ---- */
+.hero-pre{
+  font-family:'Syne',sans-serif;
+  font-size:.68rem;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:var(--lime);
+  font-weight:700;
+  opacity:0;
+  margin-bottom:32px;
+  /* pill border */
+  border:1px solid rgba(232,197,71,.28);
+  padding:6px 18px;
+  border-radius:100px;
+  display:inline-block;
+}
+
+/* ---- Kinetic word display ---- */
+/* ---- Kinetic word display ---- */
+.hero-kinetic{
+  position:relative;
+  width:100%;
+  /*
+    Height must match the rendered font-size × line-height.
+    Font-size formula: ~8.5vw is safe for "INTELLIGENT" (11 chars)
+    at any viewport ≥320px. Max capped at 130px so it never blows
+    out on ultra-wide screens. Height matches that range.
+  */
+  height:clamp(72px,10.5vw,140px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:clamp(16px,3vw,32px);
+  perspective:1200px;
+  perspective-origin:50% 50%;
+  /* contain words — overflow:visible lets shimmer render but
+     parent #hero has overflow:hidden so nothing escapes viewport */
+  overflow:visible;
+}
+
+/* Each word slot — all share same position, only one visible */
+.hero-word{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  /*
+    Sizing logic:
+    - "EXPERIENCES" / "INTELLIGENT" = 11 chars × ~0.62em wide each
+    - To fit 100vw: font-size ≤ 100vw / (11 × 0.62) ≈ 14.7vw
+    - BUT letter-spacing:-.04em reduces effective width slightly
+    - Safe value: 8vw with max 110px keeps every word on one line
+      on all screens from 320px (iPhone SE) to 2560px (wide desktop)
+  */
+  font-size:clamp(3rem,8vw,110px);
+  line-height:1;
+  letter-spacing:-.04em;
+  text-transform:uppercase;
+  white-space:nowrap;   /* never wrap — always one line */
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
+  will-change:transform,opacity;
+  transform-style:preserve-3d;
+}
+
+/* Gold shimmer variant */
+.hero-word.is-gold{
+  background:linear-gradient(
+    108deg,
+    #a06010 0%,
+    #d4a830 15%,
+    #e8c547 30%,
+    #fff3b0 45%,
+    #e8c547 58%,
+    #c8922a 73%,
+    #e8c547 86%,
+    #a06010 100%
+  );
+  background-size:250% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  /* shimmer paused — JS starts it when word becomes active */
+  animation:wordShimmer 5s linear infinite;
+  animation-play-state:paused;
+}
+@keyframes wordShimmer{
+  0%  {background-position:120% center;}
+  100%{background-position:-120% center;}
+}
+
+/* White variant */
+.hero-word.is-white{
+  color:#ffffff;
+  /* layered text-shadow for depth/glow */
+  text-shadow:
+    0 0  40px rgba(255,255,255,.08),
+    0 2px 1px  rgba(0,0,0,.8),
+    0 4px 12px rgba(0,0,0,.6);
+}
+
+/* Each individual character span — set by JS */
+.hw-char{
+  display:inline-block;
+  will-change:transform,opacity;
+}
+
+/* ---- Fixed supporting line ---- */
+.hero-stack-line{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:clamp(1rem,3.2vw,3.2rem);
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  color:rgba(240,237,247,.12);
+  margin-bottom:clamp(20px,4vw,48px);
+  line-height:1;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* ---- Progress bar — shows which word is current ---- */
+.hero-progress{
+  display:flex;
+  gap:6px;
+  margin-bottom:clamp(28px,5vw,56px);
+  align-items:center;
+}
+.hero-pip{
+  width:20px;height:1px;
+  background:rgba(240,237,247,.18);
+  border-radius:1px;
+  transition:width .4s var(--snap), background .4s;
+  position:relative;
+  overflow:hidden;
+}
+.hero-pip.active{
+  width:44px;
+  background:rgba(232,197,71,.25);
+}
+.hero-pip.active::after{
+  content:'';
+  position:absolute;inset:0;
+  background:var(--lime);
+  transform:scaleX(0);
+  transform-origin:left;
+  animation:pipFill var(--pip-dur,3s) linear forwards;
+}
+@keyframes pipFill{
+  0%  {transform:scaleX(0);}
+  100%{transform:scaleX(1);}
+}
+
+/* ---- Subtitle ---- */
+.hero-sub{
+  font-size:clamp(.88rem,1.4vw,1.08rem);
+  line-height:1.75;
+  color:rgba(240,237,247,.45);
+  font-weight:300;
+  max-width:520px;
+  text-align:center;
+  opacity:0;
+  margin-bottom:clamp(28px,5vw,52px);
+}
+
+/* ---- CTA row ---- */
+.hero-cta{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:center;
+  opacity:0;
+  margin-bottom:0;
+}
+.hero-btn-primary{
+  font-family:'Syne',sans-serif;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:14px 28px;
+  background:var(--lime);
+  color:#000;
+  border:none;
+  cursor:none;
+  transition:transform .3s var(--snap),box-shadow .3s;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.hero-btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(232,197,71,.35);
+}
+.hero-btn-secondary{
+  font-family:'Syne',sans-serif;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:13px 28px;
+  background:transparent;
+  color:var(--chalk);
+  border:1px solid rgba(240,237,247,.2);
+  cursor:none;
+  transition:border-color .3s,color .3s,transform .3s var(--snap);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.hero-btn-secondary:hover{
+  border-color:rgba(240,237,247,.5);
+  transform:translateY(-2px);
+}
+
+/* ---- Scroll indicator — bottom center ---- */
+.hero-scroll{
+  position:absolute;
+  bottom:32px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  opacity:0;
+  z-index:2;
+}
+.scroll-label{
+  font-size:.58rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(240,237,247,.3);
+  font-weight:500;
+}
+.scroll-line{
+  width:1px;
+  height:44px;
+  background:rgba(240,237,247,.12);
+  position:relative;
+  overflow:hidden;
+}
+.scroll-line::after{
+  content:'';
+  position:absolute;
+  top:-100%;left:0;
+  width:100%;height:100%;
+  background:var(--lime);
+  animation:scrollDrop 2s ease-in-out infinite;
+}
+@keyframes scrollDrop{
+  0%  {top:-100%;}
+  60% {top:100%;}
+  100%{top:100%;}
+}
+
+/* ---- Location tag — removed (replaced by eyebrow pill) ---- */
+.hero-meta{display:none;}
+
+/* ---- OLD hero classes — neutralised ---- */
+.hero-ambient{display:none;}
+.hero-headline{display:none;}
+.hero-cycle-sub{display:none;}
+
+/* ---- Responsive tweaks ---- */
+
+/* iPad / small laptop: 768–1024px */
+@media(max-width:1024px){
+  .hero-word{font-size:clamp(2.8rem,7.5vw,90px);}
+  .hero-kinetic{height:clamp(60px,9.5vw,110px);}
+}
+
+/* Tablet portrait / large phone: ≤768px */
+@media(max-width:768px){
+  .hero-word{font-size:clamp(2.4rem,8.5vw,68px);}
+  .hero-kinetic{height:clamp(52px,11vw,84px);}
+  .hero-stack-line{font-size:clamp(.8rem,3.5vw,1.4rem);}
+  .hero-cta{flex-direction:column;gap:12px;}
+  .hero-btn-primary,.hero-btn-secondary{width:100%;max-width:280px;justify-content:center;}
+}
+
+/* Mobile: ≤480px (iPhone SE → iPhone 15) */
+@media(max-width:480px){
+  /*
+    At 375px (iPhone 14): 9.5vw × 375 = 35.6px per "unit"
+    "EXPERIENCES" at 9vw: 9 × 375 / 100 ≈ 33.75px font
+    33.75 × 11 chars × ~0.58em = ~215px — fits 375px wide ✓
+  */
+  .hero-word{font-size:clamp(2rem,9vw,56px);}
+  .hero-kinetic{height:clamp(44px,12vw,70px);}
+  .hero-pre{font-size:.6rem;letter-spacing:.22em;padding:5px 14px;}
+  .hero-stack-line{font-size:.8rem;letter-spacing:.08em;}
+  .hero-sub{font-size:.85rem;padding:0 8px;}
+  .hero-progress{gap:5px;}
+  .hero-pip{width:14px;}
+  .hero-pip.active{width:32px;}
+}
+
+/* Very small: ≤360px (Galaxy A, older iPhones) */
+@media(max-width:360px){
+  .hero-word{font-size:clamp(1.8rem,8.5vw,48px);}
+  .hero-kinetic{height:clamp(40px,11vw,60px);}
+}
+
+/* ---- Prefers-reduced-motion ---- */
+@media(prefers-reduced-motion:reduce){
+  #hero-grid,#hero-glow,.hero-word.is-gold{animation:none!important;}
+  .scroll-line::after{animation:none;}
+  .hero-pip.active::after{animation:none;transform:scaleX(1);}
+}
 
 /* ============================================================
    ABOUT
@@ -293,19 +657,138 @@ body.cur-link #cur-ring{width:52px;height:52px;border-color:var(--lime-glow);}
 .skill-item:hover .skill-dot{transform:scale(1.6);}
 .skill-item.strong .skill-dot{background:var(--lime);}
 .skill-item.med .skill-dot{background:var(--chalk-dim);}
-.timeline{margin-top:96px;border-top:1px solid var(--seam);}
-.t-item{display:grid;grid-template-columns:180px 1fr;gap:32px;padding:32px 0;border-bottom:1px solid var(--seam);}
-.t-year{font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.14em;color:var(--chalk-dim);padding-top:4px;}
-.t-role{font-family:'Syne',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:-.01em;color:var(--chalk);}
-.t-co{color:var(--lime);font-size:.84rem;font-weight:500;margin-top:2px;margin-bottom:10px;}
-.t-desc{font-size:.94rem;line-height:1.7;color:var(--chalk-dim);font-weight:300;max-width:520px;}
-.t-bar{display:block;height:1px;background:var(--lime);width:0;margin-top:8px;transition:width .6s var(--snap);}
-.t-item:hover .t-bar{width:48px;}
+.timeline{
+  --tl-line:rgba(240,237,247,.14);
+  margin-top:96px;
+  position:relative;
+  max-width:980px;
+  padding:4px 0 10px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:64px;
+  bottom:44px;
+  left:60px;
+  width:2px;
+  background:linear-gradient(180deg,transparent,var(--tl-line) 8%,var(--tl-line) 88%,transparent);
+}
+.t-item{
+  --accent:#8b6cff;
+  --accent-soft:rgba(139,108,255,.16);
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr);
+  gap:56px;
+  position:relative;
+  padding:0 0 clamp(64px,8vw,104px);
+}
+.t-item:last-child{padding-bottom:0;}
+.t-item::after{
+  content:'';
+  position:absolute;
+  left:52px;
+  top:132px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:
+    0 0 0 7px color-mix(in srgb,var(--accent) 18%,transparent),
+    0 0 24px 8px var(--accent);
+  z-index:2;
+}
+.t-item.is-backend{--accent:#ffab2e;--accent-soft:rgba(255,171,46,.14);}
+.t-item.is-ai{--accent:#40dfc4;--accent-soft:rgba(64,223,196,.14);}
+.t-icon{
+  width:120px;
+  height:120px;
+  border-radius:24px;
+  border:1px solid color-mix(in srgb,var(--accent) 24%,rgba(240,237,247,.16));
+  background:
+    radial-gradient(circle at 50% 45%,var(--accent-soft),transparent 58%),
+    linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.015));
+  display:grid;
+  place-items:center;
+  box-shadow:inset 0 0 28px rgba(255,255,255,.035),0 18px 42px rgba(0,0,0,.32);
+}
+.t-icon svg{
+  width:46px;
+  height:46px;
+  stroke:var(--accent);
+  filter:drop-shadow(0 0 14px color-mix(in srgb,var(--accent) 62%,transparent));
+}
+.t-content{padding-top:2px;min-width:0;}
+.t-year{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:1.35rem;
+  letter-spacing:.01em;
+  color:rgba(240,237,247,.62);
+  margin-bottom:14px;
+}
+.t-role{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:3.35rem;
+  line-height:1.05;
+  letter-spacing:0;
+  color:#fff;
+  text-shadow:0 4px 22px rgba(255,255,255,.08);
+  max-width:100%;
+}
+.t-role .accent{color:var(--accent);}
+.t-co{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:88px;
+  min-height:42px;
+  margin:30px 0 18px;
+  padding:9px 22px;
+  border:1px solid var(--accent);
+  border-radius:6px;
+  color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 7%,transparent);
+  font-family:'Syne',sans-serif;
+  font-size:.88rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  box-shadow:0 0 24px color-mix(in srgb,var(--accent) 16%,transparent);
+}
+.t-desc{
+  font-size:1.2rem;
+  line-height:1.55;
+  color:rgba(240,237,247,.56);
+  font-weight:500;
+  max-width:760px;
+}
+.t-bar{display:none;}
 @media(max-width:900px){
   .craft-cols{grid-template-columns:1fr;}
   .craft-col{border-right:none;border-bottom:1px solid var(--seam);padding-left:0;}
   .craft-col:last-child{border-bottom:none;}
-  .t-item{grid-template-columns:1fr;gap:8px;}
+  .timeline{margin-top:72px;padding-left:0;}
+  .timeline::before{left:38px;top:48px;bottom:30px;}
+  .t-item{grid-template-columns:76px minmax(0,1fr);gap:26px;padding-bottom:72px;}
+  .t-item::after{left:31px;top:90px;width:14px;height:14px;}
+  .t-icon{width:76px;height:76px;border-radius:18px;}
+  .t-icon svg{width:34px;height:34px;}
+  .t-year{font-size:1.15rem;}
+  .t-role{font-size:2.4rem;}
+  .t-desc{font-size:1.05rem;}
+  .t-co{margin-top:22px;}
+}
+@media(max-width:560px){
+  .timeline::before{left:28px;}
+  .t-item{grid-template-columns:56px minmax(0,1fr);gap:18px;}
+  .t-item::after{left:22px;top:70px;width:12px;height:12px;}
+  .t-icon{width:56px;height:56px;border-radius:15px;}
+  .t-icon svg{width:27px;height:27px;}
+  .t-year{font-size:1rem;}
+  .t-role{font-size:1.85rem;}
+  .t-desc{font-size:.98rem;}
+  .t-co{min-width:72px;min-height:36px;padding:8px 16px;font-size:.74rem;}
 }
 
 /* ============================================================
@@ -392,17 +875,59 @@ html,body,main,section,.wrap{max-width:100%;overflow-x:hidden;}
 
 <!-- ====== HERO ====== -->
 <section id="hero" class="chapter" data-ch="01" data-cn="HERO">
-  <div class="hero-ambient"></div>
+
+  <!-- animated dot grid -->
+  <div id="hero-grid"></div>
+  <!-- radial glow -->
+  <div id="hero-glow"></div>
+
   <div class="hero-content">
-    <p class="hero-pre">Full-stack &amp; AI engineer</p>
-    <h1 class="hero-headline" id="heroHL" aria-label="Designing and building intelligent products">
-      <span id="heroCycle">Designing</span>
-    </h1>
-    <p class="hero-cycle-sub" id="heroCycleSub"></p>
-    <p class="hero-sub">I make complex systems feel simple. Two years building AI-powered products, distributed infrastructure, and interfaces people actually want to use.</p>
+
+    <!-- eyebrow pill -->
+    <p class="hero-pre" id="heroPre">Full-Stack &nbsp;×&nbsp; AI Engineer</p>
+
+    <!-- kinetic word stage -->
+    <div class="hero-kinetic" id="heroKinetic" aria-label="Building intelligent products, AI systems and experiences">
+
+      <!-- each .hero-word is a slot; only one active at a time -->
+      <!-- words alternate is-gold / is-white for visual rhythm -->
+      <div class="hero-word is-gold"  data-index="0">BUILDING</div>
+      <div class="hero-word is-white" data-index="1">INTELLIGENT</div>
+      <div class="hero-word is-gold"  data-index="2">PRODUCTS</div>
+      <div class="hero-word is-white" data-index="3">AI SYSTEMS</div>
+      <div class="hero-word is-gold"  data-index="4">BACKENDS</div>
+      <div class="hero-word is-white" data-index="5">EXPERIENCES</div>
+      <div class="hero-word is-gold"  data-index="6">AUTOMATION</div>
+
+    </div>
+
+    <!-- faint supporting line -->
+    <p class="hero-stack-line">Full-Stack &nbsp;&nbsp;·&nbsp;&nbsp; AI &nbsp;&nbsp;·&nbsp;&nbsp; Backend</p>
+
+    <!-- word progress pips -->
+    <div class="hero-progress" id="heroPips"></div>
+
+    <!-- subtitle -->
+    <p class="hero-sub" id="heroSub">
+      Build scalable backend systems,<br>
+      AI-powered applications,<br>
+      and modern digital experiences.
+    </p>
+
+    <!-- CTA buttons -->
+    <div class="hero-cta" id="heroCta">
+      <a href="#work" class="hero-btn-primary">View Projects &nbsp;→</a>
+      <a href="#contact" class="hero-btn-secondary">Let's Talk</a>
+    </div>
+
   </div>
-  <div class="hero-scroll"><div class="scroll-ticker"></div><span class="scroll-vert">Scroll</span></div>
-  <div class="hero-meta"><p>Based in</p><p>Jaipur — India</p></div>
+
+  <!-- scroll indicator -->
+  <div class="hero-scroll" id="heroScroll">
+    <span class="scroll-label">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+
 </section>
 
 <!-- ====== ABOUT ====== -->
@@ -418,7 +943,7 @@ html,body,main,section,.wrap{max-width:100%;overflow-x:hidden;}
         <p class="rv">Right now I'm most interested in the gap between AI capability and actual usability. The models are powerful. Getting them into products people trust is the real work.</p>
         <div class="about-facts">
           <div class="fact-row rv"><span>Availability</span><span>Open to projects</span></div>
-          <div class="fact-row rv"><span>Specialty</span><span>Backend  &amp; Product Engineering</span></div>
+          <div class="fact-row rv"><span>Speciality</span><span>Backend &amp; Product Eng.</span></div>
           <div class="fact-row rv"><span>Stack</span><span>TypeScript, Java, SQL</span></div>
           <div class="fact-row rv"><span>Experience</span><span>2 years</span></div>
         </div>
@@ -617,7 +1142,7 @@ html,body,main,section,.wrap{max-width:100%;overflow-x:hidden;}
             <p class="panel-sub">Backend architecture, AI apps, dev tools, automation, authentication systems, and full-stack experiments.</p>
             <ul class="panel-tags"><li>Backend</li><li>AI</li><li>Dev Tools</li><li>Automation</li><li>Full-Stack</li></ul>
             <!-- TODO: Replace # below with your GitHub profile URL -->
-            <a href="https://github.com/tectoniczesus" class="panel-link" target="_blank" rel="noopener">View All Projects →</a>
+             <a href="https://github.com/tectoniczesus" class="panel-link" target="_blank" rel="noopener">View All Projects →</a>
           </div>
         </div>
       </div>
@@ -633,7 +1158,7 @@ html,body,main,section,.wrap{max-width:100%;overflow-x:hidden;}
     <div class="deep-layout">
       <div class="deep-sticky">
         <div class="deep-label">Project Overview</div>
-        <h3 class="deep-title rv">DevInspect</h3>
+                <h3 class="deep-title rv">DevInspect</h3>
         <p class="deep-tagline rv">"AI-powered code reviews that help developers write cleaner, safer, and more maintainable software."</p>
         <div class="deep-visual rv">
           <canvas id="nexus-canvas"></canvas>
@@ -641,7 +1166,7 @@ html,body,main,section,.wrap{max-width:100%;overflow-x:hidden;}
       </div>
       <div class="deep-content-blocks">
         <div class="block rv">
-          <h4>The Problem</h4>
+           <h4>The Problem</h4>
           <p>Developers often spend significant time reviewing code, identifying bugs, explaining complex logic, and enforcing coding standards. Manual reviews can be inconsistent, time-consuming, and difficult to scale—especially for individual developers and small teams.</p>
         </div>
         <div class="block rv">
@@ -691,7 +1216,7 @@ Runs entirely with locally hosted LLMs</span></div>
         <div class="skill-item med"><span>SQL</span><span class="skill-dot"></span></div>
       </div>
       <div class="craft-col rv">
-        <h4>Frameworks &amp; Tools</h4>
+       <h4>Frameworks &amp; Tools</h4>
         <div class="skill-item strong"><span>React / Next.js</span><span class="skill-dot"></span></div>
         <div class="skill-item strong"><span>Node.js / FastAPI</span><span class="skill-dot"></span></div>
         <div class="skill-item strong"><span>SpringBoot / SpringFramework</span><span class="skill-dot"></span></div>
@@ -709,27 +1234,47 @@ Runs entirely with locally hosted LLMs</span></div>
     </div>
     <div class="timeline">
       <div class="t-item rv">
-        <div class="t-year">2023 - 2024</div>
-        <div>
-          <div class="t-role">Started Building Full-Stack Applications<span class="t-bar"></span></div>
+        <div class="t-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 14 8 24l10 10"/>
+            <path d="M30 14 40 24 30 34"/>
+            <path d="M27 8 21 40"/>
+          </svg>
+        </div>
+        <div class="t-content">
+          <div class="t-year">2024 - 2025</div>
+          <div class="t-role">Started Building <span class="accent">Full-Stack</span> Applications<span class="t-bar"></span></div>
           <div class="t-co">Full Stack</div>
-          <p class="t-desc">Lead the AI platform team. Architected Nexus, the company's multi-model orchestration layer now serving 8M requests per day.</p>
+          <p class="t-desc">Kicked off the journey by building end-to-end applications that solve real problems. Focused on creating seamless user experiences and robust systems that scale.</p>
         </div>
       </div>
-      <div class="t-item rv">
-        <div class="t-year">2024 - 2025</div>
-        <div>
-          <div class="t-role">Focused on Backend Engineering<span class="t-bar"></span></div>
+      <div class="t-item is-backend rv">
+        <div class="t-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="11" width="28" height="10" rx="2"/>
+            <rect x="10" y="27" width="28" height="10" rx="2"/>
+            <path d="M17 16h.01M17 32h.01M31 16h1M31 32h1"/>
+          </svg>
+        </div>
+        <div class="t-content">
+          <div class="t-year">2025 - 2026</div>
+          <div class="t-role">Focused on <span class="accent">Backend</span> Engineering<span class="t-bar"></span></div>
           <div class="t-co">Backend</div>
-          <p class="t-desc">Owned the real-time risk infrastructure. Built Stratum from scratch — reduced reporting latency from 15 minutes to sub-second.</p>
+          <p class="t-desc">Deepened expertise in backend systems, real-time infrastructure, and performance optimization. Designed and built reliable, scalable systems that power critical operations.</p>
         </div>
       </div>
-      <div class="t-item rv">
-        <div class="t-year">2025 - 2026</div>
-        <div>
-          <div class="t-role">Building AI-Powered Products<span class="t-bar"></span></div>
+      <div class="t-item is-ai rv">
+        <div class="t-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 39c-5 0-9-4-9-9 0-3 2-6 5-8-1-6 3-11 9-11 3 0 6 2 8 4 5 0 9 4 9 9 0 5-3 8-7 9-1 4-5 6-9 6"/>
+            <path d="M24 12v28M16 24h16M18 32h12M18 16h12"/>
+          </svg>
+        </div>
+        <div class="t-content">
+          <div class="t-year">2025 - 2026</div>
+          <div class="t-role">Building <span class="accent">AI</span>-Powered Products<span class="t-bar"></span></div>
           <div class="t-co">AI</div>
-          <p class="t-desc">First engineering hire. Shipped product across web, iOS, and internal tooling — established the engineering culture from the ground up.</p>
+          <p class="t-desc">Leading the development of intelligent products that leverage cutting-edge AI technologies. Turning complex ideas into impactful solutions that drive real value.</p>
         </div>
       </div>
     </div>
@@ -741,11 +1286,11 @@ Runs entirely with locally hosted LLMs</span></div>
   <div class="wrap">
     <p class="eyebrow rv">06 — Get In Touch</p>
     <h2 class="contact-big rv">GOT SOMETHING<br/><span class="lime">INTERESTING?</span><br/>LET'S TALK.</h2>
-    <a href="mailto:hello@kunalsoni.dev" class="contact-email rv">jp6714410@gmail.com</a>
+    <a href="mailto:jp6714410@gmail.com" class="contact-email rv">jp6714410@gmail.com</a>
     <p class="rv" style="margin-top:32px;font-size:.8rem;line-height:1.6;color:var(--chalk-dim);max-width:360px;">Based in Jaipur, India. Available worldwide for product engineering and AI systems work. Response time: usually same day.</p>
     <div class="contact-row">
       <div class="contact-social rv">
-        <a href="https://github.com/tectoniczesus">GitHub</a><a href="https://www.linkedin.com/in/kunal-soni-138903288/">LinkedIn</a><a href="#">Twitter</a><a href="#">Read.cv</a>
+                <a href="https://github.com/tectoniczesus">GitHub</a><a href="https://www.linkedin.com/in/kunal-soni-138903288/">LinkedIn</a><a href="#">Twitter</a><a href="#">Read.cv</a>
       </div>
       <p class="contact-copy rv">&copy; 2026 Kunal Soni — All rights reserved.</p>
     </div>
@@ -1237,58 +1782,220 @@ function setupNav(){
 }
 
 /* ============================================================
-   HERO
+   HERO — KINETIC WORD CYCLE ENGINE
+   Architecture:
+   - 7 words cycle continuously, one visible at a time
+   - Each word is split into .hw-char spans at init
+   - IN:  chars stagger from Y+60px,opacity:0 → Y:0,opacity:1
+   - OUT: chars stagger from Y:0,opacity:1 → Y:-50px,opacity:0
+   - Gold words run CSS shimmer while active
+   - Progress pips show current word with fill animation
+   - Master entry sequence: eyebrow → first word → sub → CTA → scroll
+   No Nabla. No browser-dependent fonts. Safari iOS safe.
 ============================================================ */
 function setupHero(){
-  var cyc=document.getElementById('heroCycle');
-  var sub=document.getElementById('heroCycleSub');
-  if(RM||!cyc){
-    if(cyc)cyc.textContent='Designing + Building';
-    if(sub){sub.style.opacity='1';sub.textContent='Intelligent products.';}
-    document.querySelectorAll('.hero-pre,.hero-sub,.hero-meta,.hero-scroll').forEach(function(e){e.style.opacity='1';});
-    return;
+
+  /* --- elements --- */
+  var kinetic = document.getElementById('heroKinetic');
+  var pipsEl  = document.getElementById('heroPips');
+  var pre     = document.getElementById('heroPre');
+  var sub     = document.getElementById('heroSub');
+  var cta     = document.getElementById('heroCta');
+  var scroll  = document.getElementById('heroScroll');
+  if(!kinetic) return;
+
+  /* --- word config --- */
+  var WORD_DURATION = 3000;  /* ms each word is visible */
+  var words = Array.from(kinetic.querySelectorAll('.hero-word'));
+  var current = 0;
+  var cycling = false;
+  var cycleTimer = null;
+
+  /* --- build progress pips --- */
+  if(pipsEl){
+    words.forEach(function(_,i){
+      var pip = document.createElement('div');
+      pip.className = 'hero-pip';
+      pip.dataset.pip = i;
+      pipsEl.appendChild(pip);
+    });
   }
-  var steps=[
-    {m:'Designing',s:''},{m:'Designing +',s:''},{m:'Designing + Building',s:''},
-    {m:'Designing + Building',s:'Intelligent'},{m:'Designing + Building',s:'Intelligent products.'}
-  ];
-  var idx=0;
-  function next(){
-    if(idx>=steps.length)return;
-    var st=steps[idx++];
-    gsap.to(cyc,{opacity:0,y:-14,duration:.14,ease:'power2.in',onComplete:function(){
-      cyc.textContent=st.m;
-      gsap.fromTo(cyc,{y:14},{y:0,opacity:1,duration:.22,ease:'power2.out'});
-    }});
-    if(st.s){sub.textContent=st.s;gsap.fromTo(sub,{y:18,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'});}
-    if(idx<steps.length)setTimeout(next,310);
-    else setTimeout(function(){
-      gsap.to('.hero-sub',{opacity:1,y:0,duration:1,ease:'power3.out'});
-      gsap.to(['.hero-meta','.hero-scroll'],{opacity:1,y:0,duration:.7,stagger:.12,ease:'power3.out',delay:.25});
-    },380);
-  }
-  gsap.fromTo('.hero-pre',{opacity:0,y:16},{opacity:1,y:0,duration:.7,ease:'power3.out',delay:.35,
-    onComplete:function(){setTimeout(next,200);}
+  var pips = pipsEl ? Array.from(pipsEl.querySelectorAll('.hero-pip')) : [];
+
+  /* --- split each word into .hw-char spans --- */
+  words.forEach(function(wordEl){
+    var text = wordEl.textContent.trim();
+    wordEl.innerHTML = '';
+    wordEl.setAttribute('aria-hidden','true');
+    text.split('').forEach(function(ch){
+      var s = document.createElement('span');
+      s.className = 'hw-char';
+      s.textContent = ch === ' ' ? '\u00A0' : ch;
+      wordEl.appendChild(s);
+    });
   });
 
-  /* Mouse parallax — headline drifts slightly toward cursor,
-     reinforcing the "floating in space" illusion */
-  if(!TOUCH&&!RM){
-    var hl=document.getElementById('heroHL');
-    window.addEventListener('mousemove',function(e){
-      var xRatio=(e.clientX/window.innerWidth-.5)*2;   /* -1 to +1 */
-      var yRatio=(e.clientY/window.innerHeight-.5)*2;
-      /* don't override the CSS float animation's translateY —
-         use rotateX/Y on the element so they stack cleanly */
-      gsap.to(hl,{
-        rotateY:xRatio*5,
-        rotateX:-yRatio*3,
-        transformPerspective:1200,
-        duration:1.2,
-        ease:'power2.out',
-        overwrite:'auto'
+  /* --- set a pip active --- */
+  function setPip(idx){
+    pips.forEach(function(p,i){
+      p.classList.remove('active');
+      p.style.setProperty('--pip-dur', WORD_DURATION + 'ms');
+      if(i === idx) p.classList.add('active');
+    });
+  }
+
+  /* --- animate word IN (chars slide up) --- */
+  function wordIn(wordEl, onDone){
+    var chars = wordEl.querySelectorAll('.hw-char');
+    var isGold = wordEl.classList.contains('is-gold');
+
+    /* make sure shimmer is running for gold words */
+    if(isGold) wordEl.style.animationPlayState = 'running';
+
+    gsap.set(wordEl, {opacity:1, zIndex:2});
+    gsap.fromTo(chars,
+      { y: 64, opacity: 0, rotateX: -30 },
+      {
+        y: 0, opacity: 1, rotateX: 0,
+        duration: 0.55,
+        ease: 'power3.out',
+        stagger: { each: 0.04, from: 'start' },
+        onComplete: onDone || null
+      }
+    );
+  }
+
+  /* --- animate word OUT (chars slide up and away) --- */
+  function wordOut(wordEl, onDone){
+    var chars = wordEl.querySelectorAll('.hw-char');
+    var isGold = wordEl.classList.contains('is-gold');
+
+    gsap.to(chars, {
+      y: -52,
+      opacity: 0,
+      rotateX: 20,
+      duration: 0.38,
+      ease: 'power2.in',
+      stagger: { each: 0.025, from: 'start' },
+      onComplete: function(){
+        gsap.set(wordEl, {opacity:0, zIndex:1});
+        if(isGold) wordEl.style.animationPlayState = 'paused';
+        if(onDone) onDone();
+      }
+    });
+  }
+
+  /* --- advance to next word --- */
+  function nextWord(){
+    if(!cycling) return;
+    var outIdx = current;
+    current = (current + 1) % words.length;
+    var inIdx = current;
+
+    setPip(inIdx);
+    wordOut(words[outIdx], function(){
+      wordIn(words[inIdx]);
+    });
+
+    cycleTimer = setTimeout(nextWord, WORD_DURATION);
+  }
+
+  /* --- start cycling --- */
+  function startCycle(){
+    cycling = true;
+    setPip(0);
+    wordIn(words[0]);
+    cycleTimer = setTimeout(nextWord, WORD_DURATION);
+  }
+
+  /* --- REDUCED MOTION: just show first word statically --- */
+  if(RM){
+    pre  && (pre.style.opacity  = '1');
+    sub  && (sub.style.opacity  = '1');
+    cta  && (cta.style.opacity  = '1');
+    scroll && (scroll.style.opacity = '1');
+    gsap.set(words[0], {opacity:1, zIndex:2});
+    var firstChars = words[0].querySelectorAll('.hw-char');
+    gsap.set(firstChars, {y:0, opacity:1});
+    if(words[0].classList.contains('is-gold'))
+      words[0].style.animationPlayState = 'running';
+    setPip(0);
+    return;
+  }
+
+  /* --- MASTER ENTRY SEQUENCE --- */
+  var tl = gsap.timeline({ delay: 0.3 });
+
+  /* 1. eyebrow pill slides down */
+  tl.fromTo(pre,
+    { opacity:0, y:-16 },
+    { opacity:1, y:0, duration:.7, ease:'power3.out' }
+  );
+
+  /* 2. first word arrives (start cycle) */
+  tl.add(function(){ startCycle(); }, '+=0.15');
+
+  /* 3. subtitle fades in after word finishes arriving */
+  tl.fromTo(sub,
+    { opacity:0, y:18 },
+    { opacity:1, y:0, duration:.9, ease:'power3.out' },
+    '+=0.8'
+  );
+
+  /* 4. CTA buttons */
+  tl.fromTo(cta,
+    { opacity:0, y:14 },
+    { opacity:1, y:0, duration:.7, ease:'power3.out' },
+    '-=0.4'
+  );
+
+  /* 5. scroll indicator */
+  tl.fromTo(scroll,
+    { opacity:0 },
+    { opacity:1, duration:.6, ease:'power2.out' },
+    '-=0.3'
+  );
+
+  /* --- MOUSE PARALLAX — very subtle, desktop only --- */
+  if(!TOUCH){
+    var stage = document.getElementById('heroKinetic');
+    var glow  = document.getElementById('hero-glow');
+    window.addEventListener('mousemove', function(e){
+      var xR = (e.clientX / window.innerWidth  - 0.5);
+      var yR = (e.clientY / window.innerHeight - 0.5);
+      /* kinetic stage tilts slightly */
+      gsap.to(stage, {
+        rotateY: xR * 6,
+        rotateX: -yR * 4,
+        transformPerspective: 1200,
+        duration: 1.8,
+        ease: 'power2.out',
+        overwrite: 'auto'
       });
-    },{passive:true});
+      /* glow drifts with cursor */
+      gsap.to(glow, {
+        x: xR * 40,
+        y: yR * 24,
+        duration: 2.2,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }, {passive:true});
+  }
+
+  /* --- MAGNETIC on CTA buttons --- */
+  if(!TOUCH && !RM && cta){
+    cta.querySelectorAll('a').forEach(function(btn){
+      btn.addEventListener('mousemove', function(e){
+        var r = btn.getBoundingClientRect();
+        var x = (e.clientX - (r.left + r.width/2)) * 0.32;
+        var y = (e.clientY - (r.top  + r.height/2)) * 0.38;
+        gsap.to(btn, {x:x, y:y, duration:.4, ease:'power3.out'});
+      });
+      btn.addEventListener('mouseleave', function(){
+        gsap.to(btn, {x:0, y:0, duration:.7, ease:'elastic.out(1,.45)'});
+      });
+    });
   }
 }
 
@@ -1363,9 +2070,9 @@ function setupReveal(){
 function setupParallax(){
   if(RM||TOUCH) return;
 
-  gsap.to('.hero-content',{yPercent:-12,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.to('.hero-meta',   {yPercent:-8, ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.to('.hero-ambient',{yPercent:18, ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+  /* hero kinetic stage subtle upward drift on scroll */
+  gsap.to('#heroKinetic',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('#hero-glow',  {yPercent:14,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
 
   var aL=document.querySelector('.about-grid>div:first-child');
   var aR=document.querySelector('.about-grid>div:last-child');
