@@ -535,23 +535,21 @@ body.cur-link #cur-ring{width:52px;height:52px;border-color:var(--lime-glow);}
   .hero-pip.active{width:32px;}
 }
 
-/* iOS Safari can drop gradient-clipped text on animated child spans.
-   Keep the gold words solid on phones so the kinetic copy never vanishes. */
-@supports(-webkit-touch-callout:none){
-  @media(max-width:768px){
-    .hero-word.is-gold,
-    .hero-word.is-gold .hw-char{
-      background:none;
-      -webkit-background-clip:initial;
-      background-clip:initial;
-      -webkit-text-fill-color:#e8c547;
-      color:#e8c547;
-      text-shadow:
-        0 0 34px rgba(232,197,71,.12),
-        0 2px 1px rgba(0,0,0,.8),
-        0 4px 12px rgba(0,0,0,.6);
-      animation:none;
-    }
+/* Mobile Safari can drop gradient-clipped transparent text during transforms.
+   Use plain filled text on phones/tablets so gold words always stay visible. */
+@media(max-width:768px){
+  .hero-word.is-gold,
+  .hero-word.is-gold .hw-char{
+    background:none!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
+    -webkit-text-fill-color:#e8c547!important;
+    color:#e8c547!important;
+    text-shadow:
+      0 0 34px rgba(232,197,71,.12),
+      0 2px 1px rgba(0,0,0,.8),
+      0 4px 12px rgba(0,0,0,.6);
+    animation:none!important;
   }
 }
 
