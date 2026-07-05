@@ -311,6 +311,15 @@ body.cur-link #cur-ring{width:52px;height:52px;border-color:var(--lime-glow);}
   animation:wordShimmer 5s linear infinite;
   animation-play-state:paused;
 }
+.hero-word.is-gold .hw-char{
+  background:inherit;
+  background-size:inherit;
+  background-position:inherit;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+}
 @keyframes wordShimmer{
   0%  {background-position:120% center;}
   100%{background-position:-120% center;}
@@ -524,6 +533,26 @@ body.cur-link #cur-ring{width:52px;height:52px;border-color:var(--lime-glow);}
   .hero-progress{gap:5px;}
   .hero-pip{width:14px;}
   .hero-pip.active{width:32px;}
+}
+
+/* iOS Safari can drop gradient-clipped text on animated child spans.
+   Keep the gold words solid on phones so the kinetic copy never vanishes. */
+@supports(-webkit-touch-callout:none){
+  @media(max-width:768px){
+    .hero-word.is-gold,
+    .hero-word.is-gold .hw-char{
+      background:none;
+      -webkit-background-clip:initial;
+      background-clip:initial;
+      -webkit-text-fill-color:#e8c547;
+      color:#e8c547;
+      text-shadow:
+        0 0 34px rgba(232,197,71,.12),
+        0 2px 1px rgba(0,0,0,.8),
+        0 4px 12px rgba(0,0,0,.6);
+      animation:none;
+    }
+  }
 }
 
 /* Very small: ≤360px (Galaxy A, older iPhones) */
